@@ -67,9 +67,12 @@ export default defineComponent({
     }
   },
   mounted() {
-    const cage = this.$parent?.$el
+    const cage = this.$parent?.$el as HTMLDivElement | undefined | null;
+    const canvas = this.$refs.canvas as HTMLCanvasElement | null;
 
-    this.canvas = (this.$refs.canvas as HTMLCanvasElement);
+    if (cage === null || cage === undefined || canvas === null) return;
+
+    this.canvas = canvas;
     this.ctx = (this.canvas.getContext("2d") as CanvasRenderingContext2D);
     this.ctx.canvas.width = cage.clientWidth;
     this.ctx.canvas.height = cage.clientHeight;

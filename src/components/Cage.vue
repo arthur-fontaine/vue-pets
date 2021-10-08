@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import Cat, { catStateEnum } from './Cat.vue';
+import Cat, {catStateEnum} from './Cat.vue';
 import Ball from './Ball.vue';
 
 export interface Physics {
@@ -43,7 +43,10 @@ export default defineComponent({
       this.ballCoordinates = null
     },
     updateBall(event: MouseEvent) {
-      const cat = this.$refs.cat as typeof Cat
+      const cat = this.$refs.cat as typeof Cat | null
+
+      if (cat === null) return;
+
       const catRect = (cat.$el as HTMLImageElement).getBoundingClientRect()
       const clickOnCat = event.x > catRect.left &&
           event.x < catRect.left + catRect.width &&
@@ -60,10 +63,15 @@ export default defineComponent({
           this.ballThrown = true
 
           this.updateBallCoordinatesInterval = setInterval(() => {
-            const ballCoordinates = (this.$refs.ball as typeof Ball).getBallPosition()
+            const ball = this.$refs.ball as typeof Ball | null;
+            const cage = this.$refs.cage as HTMLDivElement | null;
+
+            if (ball === null || cage === null) return;
+
+            const ballCoordinates = ball.getBallPosition()
             this.ballCoordinates = {
               x: ballCoordinates.x,
-              y: (this.$refs.cage as HTMLDivElement).offsetHeight - ballCoordinates.y - this.physics?.ball.width
+              y: cage.offsetHeight - ballCoordinates.y - this.physics?.ball.width
             }
           }, 100)
         }
@@ -75,9 +83,6 @@ export default defineComponent({
 
 <style scoped>
 .cage {
-  width: 50vw;
-  height: 50vh;
-  background-color: lightgrey;
   position: relative;
 }
 </style>

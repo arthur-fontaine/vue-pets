@@ -1,27 +1,70 @@
-# Vue 3 + Typescript + Vite
+# Vue-Pets
 
-This template should help get you started developing with Vue 3 and Typescript in Vite.
+A Vue component to add a cat to your Vue app.
 
-## Recommended IDE Setup
+![npm](https://img.shields.io/npm/v/vue-pets?color=%23cc3534)
+![GitHub](https://img.shields.io/github/license/arthur-fontaine/vue-pets)
+![GitHub Repo stars](https://img.shields.io/github/stars/arthur-fontaine/vue-pets)
 
-[VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur). Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
+See also: https://github.com/tonybaloney/vscode-pets/
 
-### If Using `<script setup>`
+## Installation
 
-[`<script setup>`](https://github.com/vuejs/rfcs/pull/227) is a feature that is currently in RFC stage. To get proper IDE support for the syntax, use [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) instead of Vetur (and disable Vetur).
+```shell
+npm i vue-pets --save
+```
 
-## Type Support For `.vue` Imports in TS
+## Usage
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can use the following:
+```vue
+<template>
+  <VuePets style="vue-pets" />
+</template>
 
-### If Using Volar
+<script>
+import VuePets from 'vue-pets'
+import 'vue-pets/dist/style.css'
 
-Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
+export default {
+  // ...
+  components: {
+    VuePets
+  },
+  // ...
+}
+</script>
 
-### If Using Vetur
+<style>
+.vue-pets {
+  /* use your custom dimension */
+  width: 100%;
+  height: 100%;
+}
+</style>
+```
 
-1. Install and add `@vuedx/typescript-plugin-vue` to the [plugins section](https://www.typescriptlang.org/tsconfig#plugins) in `tsconfig.json`
-2. Delete `src/shims-vue.d.ts` as it is no longer needed to provide module info to Typescript
-3. Open `src/main.ts` in VSCode
-4. Open the VSCode command palette
-5. Search and run "Select TypeScript version" -> "Use workspace version"
+### Props
+
+#### physics
+- Type:
+  ```typescript
+  {
+    ball: { width: number; cx: number; vx: number; cy: number; vy: number; },
+    cat: { x: number; y: number; }
+    world: { gravity: number; damping: number; traction: number; }
+  }
+  ```
+- Required:
+  `false`
+- Default:
+  ```typescript
+  {
+    ball: { width: 8, cx: 100, cy: 100, vx: 8, vy: 5 },
+    cat: { x: 0, y: 0 },
+    world: { gravity: 0.2, damping: 0.9, traction: 0.8 }
+  }
+  ```
+- Usage:
+  ```vue
+  <VuePets :physics="physics">
+  ```

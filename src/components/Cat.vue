@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import {ref, defineComponent} from 'vue';
+import {defineComponent} from 'vue';
 // import catFall from './../assets/cat/black_fall_from_grab_8fps.gif';
 import catIdle from './../assets/cat/black_idle_8fps.gif';
 // import catLand from './../assets/cat/black_land_8fps.gif';
@@ -42,7 +42,7 @@ export default defineComponent({
     catXSpeed: number;
     catYSpeed: number;
     direction: direction;
-    clickOnCatTimeout: number | null;
+    clickOnCatTimeout:  number | null;
     clickOnCatCounter: number;
     ballCoordinates: { x: number; y: number } | null;
   } {
@@ -97,7 +97,7 @@ export default defineComponent({
       }
     },
     catClick(event: MouseEvent) {
-      const cat = this.$refs.cat as HTMLElement;
+      const cat = this.$refs.cat as HTMLImageElement;
 
       this.clickOnCatCounter++;
 
@@ -169,8 +169,10 @@ export default defineComponent({
     },
     animate() {
         const position = this.getCatPosition();
-        const cat = this.$refs.cat as HTMLElement;
-        const cage = this.$parent?.$el as HTMLElement;
+        const cat = this.$refs.cat as HTMLImageElement | null;
+        const cage = this.$parent?.$el as HTMLDivElement | undefined | null;
+
+        if (cat === null || cage === null || cage === undefined) return;
 
         this.chaseBall()
 
@@ -200,12 +202,15 @@ export default defineComponent({
         window.requestAnimationFrame(this.animate);
     },
     chaseBall() {
-      this.ballCoordinates = (this.$parent as typeof Cage)?.ballCoordinates
+      this.ballCoordinates = (this.$parent as unknown as typeof Cage)?.ballCoordinates
+      const cat = (this.$refs.cat as HTMLImageElement | null)
+
+      if (cat === null) return;
 
       const catRect = {
         left: this.physics.cat.x,
-        top: this.physics.cat.y + (this.$refs.cat as HTMLImageElement).offsetHeight,
-        right: this.physics.cat.x + (this.$refs.cat as HTMLImageElement).offsetWidth,
+        top: this.physics.cat.y + cat.offsetHeight,
+        right: this.physics.cat.x + cat.offsetWidth,
         bottom: this.physics.cat.y
       }
 
@@ -224,7 +229,7 @@ export default defineComponent({
           (ballRect.right >= catRect.left && ballRect.left <= catRect.right)
       ) {
         this.changeCatState(catStateEnum.WITHBALL);
-        (this.$parent as typeof Cage).takeOutBall()
+        (this.$parent as unknown as typeof Cage).takeOutBall()
       } else if (this.ballCoordinates) {
         if (this.physics.cat.x >= this.ballCoordinates.x)
           this.direction = direction.GOTOLEFT
